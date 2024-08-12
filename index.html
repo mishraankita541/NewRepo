@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fintech Platform</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .container { width: 300px; margin: 0 auto; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; }
+        input { width: 100%; padding: 8px; }
+        button { padding: 10px 15px; }
+        .response { margin-top: 15px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Fintech Platform</h1>
+        <div class="form-group">
+            <label for="userId">User ID:</label>
+            <input type="text" id="userId">
+        </div>
+        <div class="form-group">
+            <label for="userName">Name:</label>
+            <input type="text" id="userName">
+        </div>
+        <button onclick="createUser()">Create User</button>
+
+        <div class="form-group">
+            <label for="amount">Amount:</label>
+            <input type="number" id="amount">
+        </div>
+        <button onclick="deposit()">Deposit</button>
+        <button onclick="withdraw()">Withdraw</button>
+
+        <h2>Balance</h2>
+        <button onclick="getBalance()">Check Balance</button>
+        <div class="response" id="response"></div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:3000/api';
+
+        async function createUser() {
+            const userId = document.getElementById('userId').value;
+            const userName = document.getElementById('userName').value;
+
+            const response = await fetch(`${API_BASE_URL}/users`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: userId, name: userName })
+            });
+            const result = await response.json();
+            document.getElementById('response').innerText = JSON.stringify(result);
+        }
+
+        async function deposit() {
+            const userId = document.getElementById('userId').value;
+            const amount = parseFloat(document.getElementById('amount').value);
+
+            const response = await fetch(`${API_BASE_URL}/deposit`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: userId, amount })
+            });
+            const result = await response.json();
+            document.getElementById('response').innerText = JSON.stringify(result);
+        }
+
+        async function withdraw() {
+            const userId = document.getElementById('userId').value;
+            const amount = parseFloat(document.getElementById('amount').value);
+
+            const response = await fetch(`${API_BASE_URL}/withdraw`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: userId, amount })
+            });
+            const result = await response.json();
+            document.getElementById('response').innerText = JSON.stringify(result);
+        }
+
+        async function getBalance() {
+            const userId = document.getElementById('userId').value;
+
+            const response = await fetch(`${API_BASE_URL}/users/${userId}/balance`);
+            const result = await response.json();
+            document.getElementById('response').innerText = `Balance: ${result.balance}`;
+        }
+    </script>
+</body>
+</html>
